@@ -9,7 +9,10 @@ import pathlib
 
 st.header("This program cluster answers")
 
-input_file = st.file_uploader("Drop your file here")
+with st.form("my-form", clear_on_submit=True):
+    input_file = st.file_uploader("Drop your file here")
+    submitted = st.form_submit_button("UPLOAD and CLUSTER")
+
 
 def save_uploadedfile(uploadedfile):
      with open(os.path.join("tempDir",uploadedfile.name),"wb") as f:
@@ -17,7 +20,9 @@ def save_uploadedfile(uploadedfile):
      
 
 
-if input_file:
+if submitted and input_file is not None:
+    placeholder = st.empty()
+    placeholder.text("Please Wait")
     save_uploadedfile(input_file)
     file_path = os.path.join("tempDir", input_file.name)
     new_file = file_path.replace('.xlsx', '')+"_clustered.xlsx"
@@ -26,4 +31,5 @@ if input_file:
     write_result(data_preprocessed, new_file)
     with open(new_file, 'rb') as f:
         st.download_button('Download result', data=f, file_name=pathlib.PurePath(new_file).name)
+    placeholder.text("DONE!")
 
