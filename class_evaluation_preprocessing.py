@@ -102,14 +102,14 @@ def apply_kmeans(X_clustering, n_clusters):
   return kmeans.labels_
 
 
-def write_result(data_preprocessed, new_file):
+def write_result(data_preprocessed, new_file, n_clusters):
     xl = pd.ExcelFile(new_file)
     i = 0
     for x in data_preprocessed:
       first_thoughts_clustering = model.encode(data_preprocessed[x]['First Thoughts'].to_list(), show_progress_bar=True)
       post_thoughts_clustering = model.encode(data_preprocessed[x]['Post Thoughts'].to_list(), show_progress_bar=True)
-      first_thoughts_labels = apply_kmeans(first_thoughts_clustering, n_clusters=6)
-      post_thoughts_labels = apply_kmeans(post_thoughts_clustering, n_clusters=6)
+      first_thoughts_labels = apply_kmeans(first_thoughts_clustering, n_clusters=n_clusters)
+      post_thoughts_labels = apply_kmeans(post_thoughts_clustering, n_clusters=n_clusters)
 
 
       df_first_thoughts = df1[x][['Answer', 'First Thoughts']]
