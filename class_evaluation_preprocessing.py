@@ -53,7 +53,7 @@ def remove_unness_character(x):
 
 """Removing punctuation marks"""
 
-punctuation = string.punctuation + '！’”＃＄％＾＆＊（）＿＋＝：；＜＞「」＠『』。、“■・【】●○⌒☆｀´→'
+punctuation = string.punctuation + '！’”＃＄％＾＆＊（）＿＋＝：；＜＞「」＠『』。、“■・【】●○⌒☆｀´←→〈〉✖️①②③④'
 regular_punct = list(punctuation)
 def remove_punctuation(text, punct_list=regular_punct):
     for punc in punct_list:
@@ -81,6 +81,8 @@ def preprocess_data(file_path):
     data_preprocessed = copy.deepcopy(df3)
 
     return data_preprocessed
+
+
 """# Import Model"""
 
 
