@@ -124,10 +124,10 @@ def write_result(data_preprocessed, new_file, n_clusters):
 
       #Write clusterd result to excel
       with pd.ExcelWriter(new_file, mode='a', if_sheet_exists='replace') as writer:  
-        df_first_thoughts.to_excel(writer, sheet_name=xl.sheet_names[i]+'_clustered')
+        df_first_thoughts.to_excel(writer, sheet_name=xl.sheet_names[i]+'_clustered', index=False)
       
       with pd.ExcelWriter(new_file, mode='a', if_sheet_exists='overlay') as writer:  
-          df_post_thoughts.to_excel(writer, startcol=7, sheet_name=xl.sheet_names[i]+'_clustered')
+          df_post_thoughts.to_excel(writer, startcol=7, sheet_name=xl.sheet_names[i]+'_clustered', index=False)
       
       i+=1
 
