@@ -53,7 +53,7 @@ def remove_unness_character(x):
 
 """Removing punctuation marks"""
 
-punctuation = string.punctuation + '！’”＃＄％＾＆＊（）＿＋＝：；＜＞「」＠『』。、“■・【】●○⌒☆｀´←→〈〉✖️①②③④⤵︎'
+punctuation = string.punctuation + '！’”＃＄％＾＆＊（）＿＋＝：；＜＞「」＠『』。、“■・【】●○⌒☆｀´←→〈〉✖️①②③④⤵︎↓'
 regular_punct = list(punctuation)
 def remove_punctuation(text, punct_list=regular_punct):
     for punc in punct_list:
