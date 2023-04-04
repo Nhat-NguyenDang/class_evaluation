@@ -11,25 +11,23 @@ import shutil
 import pandas as pd
 import neologdn
 import copy
-import transformers
-import sentence_transformers
-# transformers.BertTokenizer = transformers.BertJapaneseTokenizer
-from sentence_transformers import SentenceTransformer
-from sentence_transformers import models, datasets, losses
 import string
 from sklearn.cluster import KMeans
 import numpy as np
+from models import build_model
+import streamlit as st
+
+"""Encoding model"""
+model = build_model("sonoisa/sentence-luke-japanese-base-lite")
+
 
 """# Preprocessing text"""
-
-file_path = "01.xlsx"
-
 
 """Normalize"""
 
 def normalize_x(x):
   if type(x)!=str:
-    x = '' # Convert to blank
+    x = '' # Convert to blank if type is not string
   x = neologdn.normalize(x)
   return x
 
@@ -61,8 +59,14 @@ def remove_punctuation(text, punct_list=regular_punct):
             text = text.replace(punc, ' ')
     return text.strip()
 
+
+
 def preprocess_data(file_path):
-    data = pd.read_excel(file_path, sheet_name=None, skiprows=7) #Read multiple sheets using sheet_name = None
+    data = pd.read_excel(file_path, sheet_name=None, skiprows=7) #Read multiple sheets using sheet_name = None,
+    for key in data.keys():
+       if "clustered" in key:
+          st.warning("Already clustered, please check your file")
+          return
     global df1 
     df1 = copy.deepcopy(data)
     for x in df1: 
@@ -82,19 +86,6 @@ def preprocess_data(file_path):
 
     return data_preprocessed
 
-
-"""# Import Model"""
-
-
-bert = models.Transformer("sonoisa/sentence-luke-japanese-base-lite")
-pooling = models.Pooling(
-        bert.get_word_embedding_dimension(),
-        pooling_mode_mean_tokens=True,
-)
-
-model = SentenceTransformer(modules=[bert, pooling])
-
-
 """# KMEANS applying"""
 
 
@@ -103,13 +94,15 @@ def apply_kmeans(X_clustering, n_clusters):
   kmeans.fit(X_clustering)
   return kmeans.labels_
 
-
+#Encoding data, applying KMEANS and write it to excel file
 def write_result(data_preprocessed, new_file, n_clusters):
     xl = pd.ExcelFile(new_file)
     i = 0
     for x in data_preprocessed:
+      #Encoding
       first_thoughts_clustering = model.encode(data_preprocessed[x]['First Thoughts'].to_list(), show_progress_bar=True)
       post_thoughts_clustering = model.encode(data_preprocessed[x]['Post Thoughts'].to_list(), show_progress_bar=True)
+      #KMeans
       first_thoughts_labels = apply_kmeans(first_thoughts_clustering, n_clusters=n_clusters)
       post_thoughts_labels = apply_kmeans(post_thoughts_clustering, n_clusters=n_clusters)
 
@@ -131,9 +124,9 @@ def write_result(data_preprocessed, new_file, n_clusters):
       
       i+=1
 
-if __name__ == "__main__":
-    new_file = file_path.replace('.xlsx', '')+"_clustered.xlsx"
-    shutil.copy(file_path, new_file)
-    data_preprocessed = preprocess_data(new_file)
-    write_result(data_preprocessed, new_file)
+# if __name__ == "__main__":
+#     new_file = file_path.replace('.xlsx', '')+"_clustered.xlsx"
+#     shutil.copy(file_path, new_file)
+#     data_preprocessed = preprocess_data(new_file)
+#     write_result(data_preprocessed, new_file)
 
