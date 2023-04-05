@@ -18,7 +18,7 @@ from models import build_model
 import streamlit as st
 
 """Encoding model"""
-model = build_model("sonoisa/sentence-luke-japanese-base-lite")
+model = build_model("sonoisa/sentence-bert-base-ja-mean-tokens-v2")
 
 
 """# Preprocessing text"""
